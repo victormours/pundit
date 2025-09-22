@@ -108,6 +108,10 @@ module Pundit
       @_pundit_policy_authorized_count = :skipped
     end
 
+    def skip_second_authorization
+      @_pundit_policy_authorized_count += 1
+    end
+
     # @return [Boolean] wether or not authorization has been performed
     # @see #authorize
     # @see #skip_authorization
