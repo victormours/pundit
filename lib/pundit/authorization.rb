@@ -89,7 +89,7 @@ module Pundit
     def authorize(record, query = nil, policy_class: nil)
       query ||= "#{action_name}?"
 
-      if @_pundit_policy_authorized.nil?
+      if @_pundit_policy_authorized_count.nil?
         @_pundit_policy_authorized_count = 1
       else
         @_pundit_policy_authorized_count += 1
