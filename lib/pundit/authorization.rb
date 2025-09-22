@@ -67,7 +67,7 @@ module Pundit
       @pundit = nil
       @_pundit_policies = nil
       @_pundit_policy_scopes = nil
-      @_pundit_policy_authorized = nil
+      @_pundit_policy_authorized_count = nil
       @_pundit_policy_scoped = nil
     end
 
@@ -89,7 +89,11 @@ module Pundit
     def authorize(record, query = nil, policy_class: nil)
       query ||= "#{action_name}?"
 
-      @_pundit_policy_authorized = true
+      if @_pundit_policy_authorized.nil?
+        @_pundit_policy_authorized_count = 1
+      else
+        @_pundit_policy_authorized_count += 1
+      end
 
       pundit.authorize(record, query: query, policy_class: policy_class)
     end
@@ -108,8 +112,8 @@ module Pundit
     # @see #authorize
     # @see #skip_authorization
     # @since v1.0.0
-    def pundit_policy_authorized?
-      !!@_pundit_policy_authorized
+    def pundit_policy_authorized?(count: 1)
+      @_pundit_policy_authorized_count >= count
     end
 
     # Raises an error if authorization has not been performed.
@@ -125,6 +129,10 @@ module Pundit
     # @since v0.1.0
     def verify_authorized
       raise AuthorizationNotPerformedError, self.class unless pundit_policy_authorized?
+    end
+
+    def verify_authorized_twice
+      raise AuthorizationNotPerformedError, self.class unless pundit_policy_authorized?(count: 2)
     end
 
     # rubocop:disable Naming/MemoizedInstanceVariableName

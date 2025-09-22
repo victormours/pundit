@@ -27,6 +27,23 @@ describe Pundit::Authorization do
     end
   end
 
+  describe "#verify_authorized_twice" do
+    it "does nothing when authorized twice" do
+      controller.authorize(post)
+      controller.authorize(post)
+      controller.verify_authorized
+    end
+
+    it "raises an exception when not authorized" do
+      expect { controller.verify_authorized }.to raise_error(Pundit::AuthorizationNotPerformedError)
+    end
+
+    it "raises an exception when authorized only once" do
+      controller.authorize(post)
+      expect { controller.verify_authorized }.to raise_error(Pundit::AuthorizationNotPerformedError)
+    end
+  end
+
   describe "#verify_policy_scoped" do
     it "does nothing when policy_scope is used" do
       controller.policy_scope(Post)
