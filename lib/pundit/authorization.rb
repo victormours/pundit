@@ -105,7 +105,7 @@ module Pundit
     # @see #verify_authorized
     # @since v1.0.0
     def skip_authorization
-      @_pundit_policy_authorized = :skipped
+      @_pundit_policy_authorized_count = :skipped
     end
 
     # @return [Boolean] wether or not authorization has been performed
@@ -113,7 +113,8 @@ module Pundit
     # @see #skip_authorization
     # @since v1.0.0
     def pundit_policy_authorized?(count: 1)
-      @_pundit_policy_authorized_count >= count
+      @_pundit_policy_authorized_count == :skipped ||
+        @_pundit_policy_authorized_count >= count
     end
 
     # Raises an error if authorization has not been performed.
